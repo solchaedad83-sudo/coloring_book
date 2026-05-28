@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A4 색칠 도안 생성기</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="control-panel" aria-labelledby="app-title">
+        <div class="title-block">
+          <p class="eyebrow">A4 컬러링 도안</p>
+          <h1 id="app-title">색칠 도안 생성기</h1>
+        </div>
+
+        <form class="controls" id="controls">
+          <details class="settings-panel" open>
+            <summary>API 설정</summary>
+            <label class="field">
+              <span>OpenAI API Key</span>
+              <input id="apiKey" type="password" autocomplete="off" placeholder="sk-..." />
+            </label>
+            <label class="field">
+              <span>이미지 모델</span>
+              <input id="imageModel" type="text" value="gpt-image-1.5" />
+            </label>
+            <label class="toggle">
+              <input id="rememberApiKey" type="checkbox" />
+              <span>이 브라우저에 API 키 저장</span>
+            </label>
+          </details>
+
+          <label class="field">
+            <span>주제</span>
+            <select id="theme">
+              <option value="random">랜덤 프리미엄 도안</option>
+              <option value="cozyInterior">코지 인테리어</option>
+              <option value="botanicalPortrait">보태니컬 인물</option>
+              <option value="vintageMarket">빈티지 마켓</option>
+              <option value="cityCafe">도시 카페 거리</option>
+              <option value="fantasyLibrary">판타지 서재</option>
+              <option value="ornamentalAnimal">장식 동물</option>
+            </select>
+          </label>
+
+          <fieldset class="segmented" aria-labelledby="difficulty-label">
+            <legend id="difficulty-label">난이도</legend>
+            <label>
+              <input type="radio" name="difficulty" value="easy" checked />
+              <span>가볍게</span>
+            </label>
+            <label>
+              <input type="radio" name="difficulty" value="medium" />
+              <span>집중</span>
+            </label>
+            <label>
+              <input type="radio" name="difficulty" value="hard" />
+              <span>고난도</span>
+            </label>
+          </fieldset>
+
+          <label class="field">
+            <span>도안 스타일</span>
+            <select id="style">
+              <option value="center">큰 메인 그림</option>
+              <option value="scene">배경이 있는 장면</option>
+              <option value="pattern">반복 패턴</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>선 굵기</span>
+            <input id="strokeWidth" type="range" min="2" max="7" value="4" />
+          </label>
+
+          <label class="toggle">
+            <input id="includeTitle" type="checkbox" checked />
+            <span>도안에 제목 넣기</span>
+          </label>
+
+          <label class="toggle">
+            <input id="wideMargin" type="checkbox" />
+            <span>넓은 색칠 여백</span>
+          </label>
+
+          <div class="actions">
+            <button type="button" class="primary" id="generateBtn">AI 도안 만들기</button>
+            <button type="button" id="sampleBtn">빠른 샘플</button>
+            <button type="button" id="downloadPngBtn">PNG 저장</button>
+            <button type="button" id="downloadSvgBtn">SVG 저장</button>
+            <button type="button" id="shareBtn">iPad 공유</button>
+            <button type="button" id="printBtn">인쇄/PDF</button>
+          </div>
+
+          <p class="status" id="status" role="status" aria-live="polite">A4 세로 도안이 준비됐습니다.</p>
+        </form>
+      </section>
+
+      <section class="preview-panel" aria-label="A4 도안 미리보기">
+        <div class="paper-frame">
+          <div id="artwork" class="artwork" role="img" aria-label="생성된 색칠 도안"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
