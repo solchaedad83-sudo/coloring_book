@@ -14,6 +14,17 @@ node server.js
 
 API 키는 기본적으로 저장되지 않습니다. `이 브라우저에 API 키 저장`을 켜면 현재 브라우저의 localStorage에 저장됩니다.
 
+## Vercel 배포
+
+이 저장소는 Vercel에서 바로 가져와 배포할 수 있습니다.
+
+- Framework Preset: `Other`
+- Build Command: 비워둠
+- Output Directory: 비워둠
+- Install Command: 기본값 사용
+
+정적 파일은 루트의 `index.html`, `app.js`, `styles.css`가 제공하고, AI 생성 API는 `api/generate.js` 서버리스 함수가 처리합니다. 사용자가 웹앱 설정창에 OpenAI API 키를 입력하는 방식이라 Vercel 환경변수에 API 키를 넣을 필요는 없습니다.
+
 ## 기능
 
 - 성인용 주제 선택: 랜덤 프리미엄 도안, 코지 인테리어, 보태니컬 인물, 빈티지 마켓, 도시 카페 거리, 판타지 서재, 장식 동물
