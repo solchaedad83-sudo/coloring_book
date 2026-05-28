@@ -34,6 +34,7 @@ const controls = {
 
 let seed = Date.now();
 let currentTheme = randomThemes[seed % randomThemes.length];
+let currentAiImageUrl = "";
 
 function mulberry32(value) {
   return function random() {
@@ -118,6 +119,28 @@ function setBusy(isBusy) {
   controls.generateBtn.disabled = isBusy;
   controls.sampleBtn.disabled = isBusy;
   controls.generateBtn.textContent = isBusy ? "AI 도안 생성 중..." : "AI 도안 만들기";
+}
+
+function base64ToBlob(base64, mimeType = "image/png") {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: mimeType });
+}
+
+function setAiImage(imageBase64, mimeType) {
+  if (currentAiImageUrl) {
+    URL.revokeObjectURL(currentAiImageUrl);
+  }
+  const blob = base64ToBlob(imageBase64, mimeType);
+  currentAiImageUrl = URL.createObjectURL(blob);
+  const image = new Image();
+  image.alt = `${titleText()} AI 컬러링 도안`;
+  image.src = currentAiImageUrl;
+  image.dataset.kind = "ai";
+  controls.artwork.replaceChildren(image);
 }
 
 function loadApiSettings() {
@@ -579,11 +602,17 @@ async function createAiArtwork() {
     if (!response.ok) {
       throw new Error(data.error || "AI 도안 생성에 실패했습니다.");
     }
-    const image = new Image();
-    image.alt = `${titleText()} AI 컬러링 도안`;
-    image.src = data.image;
-    image.dataset.kind = "ai";
-    controls.artwork.replaceChildren(image);
+    if (data.imageBase64) {
+      setAiImage(data.imageBase64, data.mimeType);
+    } else if (data.image) {
+      const image = new Image();
+      image.alt = `${titleText()} AI 컬러링 도안`;
+      image.src = data.image;
+      image.dataset.kind = "ai";
+      controls.artwork.replaceChildren(image);
+    } else {
+      throw new Error("이미지 데이터가 응답에 포함되지 않았습니다.");
+    }
     setStatus(`${titleText()} AI 도안을 만들었습니다.`);
   } catch (error) {
     createArtwork();
