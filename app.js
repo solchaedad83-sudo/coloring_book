@@ -9,6 +9,7 @@ const adultThemeLabels = {
   cityCafe: "도시 카페 거리",
   fantasyLibrary: "판타지 서재",
   ornamentalAnimal: "장식 동물",
+  custom: "직접 입력",
 };
 
 const randomThemes = ["cozyInterior", "botanicalPortrait", "vintageMarket", "cityCafe", "fantasyLibrary", "ornamentalAnimal"];
@@ -18,6 +19,8 @@ const controls = {
   imageModel: document.querySelector("#imageModel"),
   rememberApiKey: document.querySelector("#rememberApiKey"),
   theme: document.querySelector("#theme"),
+  customTheme: document.querySelector("#customTheme"),
+  customThemeWrap: document.querySelector("#customThemeWrap"),
   style: document.querySelector("#style"),
   strokeWidth: document.querySelector("#strokeWidth"),
   includeTitle: document.querySelector("#includeTitle"),
@@ -81,12 +84,18 @@ function activeTheme() {
   if (controls.theme.value === "random") {
     return currentTheme;
   }
+  if (controls.theme.value === "custom") {
+    return "custom";
+  }
   return controls.theme.value;
 }
 
 function titleText(theme = activeTheme()) {
   if (controls.theme.value === "random") {
     return "랜덤 컬러링";
+  }
+  if (theme === "custom") {
+    return controls.customTheme.value.trim() || "직접 입력 도안";
   }
   return adultThemeLabels[theme] || "컬러링 도안";
 }
@@ -96,6 +105,7 @@ function currentSettings() {
     apiKey: controls.apiKey.value.trim(),
     imageModel: controls.imageModel.value.trim() || "gpt-image-1.5",
     theme: controls.theme.value === "random" ? currentTheme : controls.theme.value,
+    customTheme: controls.customTheme.value.trim(),
     difficulty: selectedDifficulty(),
     style: controls.style.value,
     wideMargin: controls.wideMargin.checked,
@@ -589,6 +599,11 @@ async function createAiArtwork() {
     setStatus("API 설정에 OpenAI API Key를 입력한 뒤 AI 도안을 만들 수 있습니다.");
     return;
   }
+  if (controls.theme.value === "custom" && !controls.customTheme.value.trim()) {
+    setStatus("직접 입력 주제를 작성한 뒤 AI 도안을 만들 수 있습니다.");
+    controls.customTheme.focus();
+    return;
+  }
   saveApiSettings();
   setBusy(true);
   setStatus("AI가 컬러링북 스타일의 선화를 만드는 중입니다. 보통 20초 이상 걸릴 수 있습니다.");
@@ -706,8 +721,10 @@ controls.theme.addEventListener("change", () => {
   if (controls.theme.value === "random") {
     currentTheme = randomThemes[Math.floor(mulberry32(Date.now())() * randomThemes.length)];
   }
+  controls.customThemeWrap.classList.toggle("is-visible", controls.theme.value === "custom");
   createArtwork();
 });
+controls.customTheme.addEventListener("input", createArtwork);
 controls.strokeWidth.addEventListener("input", createArtwork);
 controls.includeTitle.addEventListener("change", createArtwork);
 controls.wideMargin.addEventListener("change", createArtwork);

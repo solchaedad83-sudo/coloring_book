@@ -121,6 +121,14 @@ h1 {
   accent-color: var(--accent);
 }
 
+.custom-theme-field {
+  display: none;
+}
+
+.custom-theme-field.is-visible {
+  display: grid;
+}
+
 .segmented {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
